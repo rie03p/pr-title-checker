@@ -1,0 +1,27 @@
+name: 'PR Title Check'
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - ready_for_review
+jobs:
+  validate-title:
+    name: Validate title
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate pull request title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          LINEAR_PREFIX="HOGE"
+          
+          if [[ "$TITLE" =~ ^\[${LINEAR_PREFIX}-[0-9]+(,[[:space:]]*${LINEAR_PREFIX}-[0-9]+)*\][[:space:]].+ ]] || \
+             [[ "$TITLE" =~ ^Revert[[:space:]]\".+\"$ ]] || \
+             [[ "$TITLE" =~ ^Reapply[[:space:]]\".+\"$ ]]; then
+            exit 0
+          fi
+          exit 1
