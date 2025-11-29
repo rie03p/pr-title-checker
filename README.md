@@ -1,2 +1,1 @@
-# Check PR Title
-
+# PR Title Checker
